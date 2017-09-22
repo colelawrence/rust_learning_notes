@@ -1,0 +1,8 @@
+[package]
+name = "hello_cargo"
+version = "0.1.0"
+authors = ["Cole Lawrence <colelawrence@mobilgov.com>"]
+
+[dependencies]
+
+rand = "0.3.14"
