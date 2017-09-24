@@ -10,9 +10,6 @@ pub struct G<T> {
 }
 
 type Walk = (Vec<usize>, f32);
-fn new_walk() -> Walk {
-    (Vec::new(), 0.0)
-}
 fn walk(from: &Walk, to: usize, distance: f32) -> Walk {
     let (mut prev, mut dist) = from.clone();
     prev.push(to);
@@ -33,31 +30,28 @@ impl<T> G<T> {
         let mut solution: Option<(Vec<&T>, f32)> = None;
         path.next.insert(from, (vec![from], 0.0));
         'outer: loop {
-            let opts = path.next;
-            println!("Next up: {:?}", opts);
+            let choices: HashMap<usize, Walk> = path.next;
+            println!("Next up: {:?}", choices);
             // TODO: sort options by total distance,
             // ensure that the longest paths have been walked
             // let options: Vec<(f32, usize)> = Vec::new();
             let mut next = HashMap::new();
-            for (&choice_id, &(ref history, distance)) in opts.iter() {
+            for (&choice_id, choice_walk) in choices.iter() {
                 if choice_id == to {
                     println!("{:?}", self);
-                    println!("Found something... {:?}", history);
-                    let history_t = history
+                    println!("Found something... {:?}", choice_walk);
+                    let history_t = choice_walk.0
                         .iter()
                         .map(|&id| self.get_vertice(id).unwrap())
                         .collect();
-                    solution = Some((history_t, distance));
+                    solution = Some((history_t, choice_walk.1));
                     break 'outer;
                 }
-                path.seen.insert(choice_id, (history.clone(), distance));
+                path.seen.insert(choice_id, choice_walk.clone());
                 if let Some(next_to) = self.to(choice_id) {
                     for &(next_id, next_id_distance) in next_to {
                         if !path.seen.contains_key(&next_id) {
-                            let mut next_history = history.clone();
-                            next_history.push(next_id);
-                            let next_walk: Walk = (next_history, next_id_distance + distance);
-                            next.insert(next_id, next_walk);
+                            next.insert(next_id, walk(&choice_walk, next_id, next_id_distance));
                         }
                     }
                 }
@@ -91,10 +85,7 @@ impl<T> G<T> {
     }
 
     pub fn to(&self, id: usize) -> Option<&Vec<(usize, f32)>> {
-        match self.edges.get(&id) {
-            Some(edges) => Some(edges),
-            None => None,
-        }
+        self.edges.get(&id)
     }
 
     pub fn get_vertice(&self, id: usize) -> Option<&T> {
