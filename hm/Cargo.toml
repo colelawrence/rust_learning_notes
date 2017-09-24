@@ -3,4 +3,8 @@ name = "hm"
 version = "0.1.0"
 authors = ["Cole Lawrence <colelawrence@mobilgov.com>"]
 
+[profile.release]
+# To make binary as small as possible use:
+panic = 'abort'
+
 [dependencies]
