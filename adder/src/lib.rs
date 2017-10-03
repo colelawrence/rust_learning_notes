@@ -1,3 +1,5 @@
+mod bezier;
+
 #[derive(Debug)]
 pub struct Rectangle {
     length: u32,

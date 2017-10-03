@@ -1,3 +1,4 @@
+/*
 #[derive(Debug)]
 struct User {
     first_name: String,
@@ -260,4 +261,9 @@ impl SketchMessage {
             _ => Err(String::from("no bueno")),
         }
     }
+}
+*/
+mod lib;
+fn main() {
+    println!("Hello, world!");
 }
